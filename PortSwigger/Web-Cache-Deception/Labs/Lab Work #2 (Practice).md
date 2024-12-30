@@ -74,7 +74,7 @@ Let's investigate how delimiters affect website behavior.
 
 ### 🗝️ 5. Obtaining the API Key
 Determine the API key for user **carlos**.
-1. 🛠️ On the exploit server, create an exploit that redirects victim `carlos` to a malicious URL:
+1. 🛠️ On the exploit server, create an exploit that redirects victim `carlos` to a malicious URL: <script>document.location="https://YOUR.LAB.LINK.PART/my-account;eyes.js"</script>
 2. 🚀 Click "Deliver the exploit to the victim." When the victim views the exploit, the response will be stored in the cache.
 3. 🌐 Navigate to the URL specified in your exploit:  
    `https://YOUR.LAB.LINK.PART/my-account;eyes.js`.
