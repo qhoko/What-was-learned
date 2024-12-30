@@ -71,17 +71,17 @@ Let's investigate how delimiters affect website behavior.
 3. In Proxy > HTTP history, notice that all paths for static resources start with the directory prefix `/resources`. Note that responses to requests with the `/resources` prefix show signs of caching.
 4. Right-click the request with the `/resources` prefix and select "Send to Repeater."
 5. In Repeater, add the encoded dot-segment after the `/resources` prefix in the path, for example `/resources/..%2feyes`.
-6. Send the request. Note that the 404 response contains the X-Cache: miss header: ![image](https://github.com/user-attachments/assets/67df76ec-675f-4be3-a74e-b18e5a9ace2b).
-7. Repeat the request. Note that the value of the X-Cache header changes to hit. This confirms that there exists a static caching rule for directories based on the `/resources` prefix: ![image](https://github.com/user-attachments/assets/8460c8be-730a-4a16-a435-d5b69bf4cf49).
+6. Send the request. Note that the 404 response contains the X-Cache: miss header: ![image](https://github.com/user-attachments/assets/af167914-d73b-4588-92bd-6211f71ddc87).
+7. Repeat the request. Note that the value of the X-Cache header changes to hit. This confirms that there exists a static caching rule for directories based on the `/resources` prefix: ![image](https://github.com/user-attachments/assets/ac4b10be-402b-4eb6-a591-d169a82f8044).
 
 ---
 
 ### 🗝️ 5. Obtaining the API Key
 Determine the API key for user **carlos**.
-1. 🛠️ In the Body section, create an exploit that redirects the victim user carlos to a malicious URL. Be sure to add an arbitrary parameter as a cache-buster to ensure the victim does not receive your previously cached response: <script>document.location="https://YOUR.LAB.LINK/resources/..%2fmy-account?eyes"</script>
+1. 🛠️ In the Body section, create an exploit that redirects the victim user carlos to a malicious URL. Be sure to add an arbitrary parameter as a cache-buster to ensure the victim does not receive your previously cached response: <script>document.location="https://YOUR.LAB.LINK/resources/%2e%2e%2fmy-account?eyes"</script>
 2. 🚀 Click "Deliver Exploit to Victim". When the victim views the exploit, the response is cached.
 3. 🌐 Go to the URL specified in your exploit: 
-   `https://YOUR.LAB.LINK/PREFIX/resources/..%2fmy-account?eyes`.
+   `https://YOUR.LAB.LINK/PREFIX/resources/%2e%2e%2fmy-account?eyes`.
 4. 🔑 The response includes the API key for **carlos**:
    ![API Key for carlos](https://github.com/user-attachments/assets/6e9c4f5b-5c3c-4ba3-a2e0-39685da71337).
 
