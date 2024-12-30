@@ -73,11 +73,11 @@ Exploring how delimiters affect the site behavior.
 2. Repeat this test using the `;` delimiter instead of `?`. Note that it receives a 200 response with your API key and the `X-Cache: miss` header: ![image](https://github.com/user-attachments/assets/f2a08d85-3536-4a5c-967b-15722dd4b524). Resend and note that it updates to `X-Cache: hit`. This indicates that the cache normalized the path to `/robots.txt` and cached the response. You can use this payload for exploitation.
 3. In the Burp browser, click “Go to the Exploit Server”.
 4. In the Body section, create an exploit that redirects the victim user to the malicious URL you created. Be sure to add a random parameter as a cache buster:
-<script>document.location="https://YOUR.LAB.LINK/my-account;%2f%2e%2e%2frobots.txt?eyes"</script>
+<script>document.location="https://YOUR.LAB.LINK/my-account;%2f%2e.%2frobots.txt?eyes"</script>
 6. Click “Deliver the exploit to the victim”.
 7. Go to the URL you provided to the victim in your exploit: `https://YOUR.LAB.LINK/my-account;%2f%2e%2e%2frobots.txt?eyes`.
 8. Note that the Burp browser redirects to the account login page. This may be due to the browser redirecting requests with invalid session data. Try to use the exploit in Burp.
-9. Go to the Repeater tab containing the `/my-account` request. Change the path to reflect the URL you sent to the victim in your exploit. For example, `/my-account;%2f%2e%2e%2frobots.txt?eyes`.
+9. Go to the Repeater tab containing the `/my-account` request. Change the path to reflect the URL you sent to the victim in your exploit. For example, `/my-account;%2f%2e.%2frobots.txt?eyes`.
 10. Send the request. Ensure you do this within 30 seconds after delivering the exploit to the victim. If not, send the exploit again with a different cache buster.
 11. Note that the response includes the CSRF token for the **administrator** user. Copy this.
 
@@ -87,8 +87,8 @@ Exploring how delimiters affect the site behavior.
 Determine the API key for the user **carlos**.
 1. In the Proxy > HTTP History section, right-click on the POST `/my-account/change-email` request, and select "Send to Repeater".
 2. In Repeater, replace the CSRF token with the admin's token.
-3. Change the email address in your exploit so it does not match your own.
-4. Right-click the request and select Interaction Tools > Generate CSRF PoC.
+3. Change the email address in your exploit so it does not match your own: ![image](https://github.com/user-attachments/assets/8706d8a7-64ca-4dbf-ac0f-3eba8fd71759).
+4. Right-click the request and select Interaction Tools > Generate CSRF PoC: ![image](https://github.com/user-attachments/assets/b38846ed-0716-4af3-ba01-c1eab1e4fad1)
 5. Click Copy HTML.
 6. Paste the HTML code into the Body section of the exploit server.
 7. Click “Deliver the exploit to the victim” to complete the lab.
