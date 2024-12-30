@@ -93,9 +93,9 @@ Determine the API key for the user **carlos**.
 2. Send the request. Note that you receive a 200 response with your API key, but it does not contain indications of caching.
 3. Repeat this test using the symbols `%23` and `%3f` instead of `"?"`. Note that when using the `%23` symbol, it receives a 200 response with your API key and the `X-Cache: miss` header. Repeating the send shows it updates to `X-Cache: hit`. You can use this delimiter for the exploit.
 4. In Burp's browser, click on "Go to the exploit server."
-5. In the Body section, create an exploit that redirects the victim user carlos to a malicious URL. Be sure to add an arbitrary parameter as a cache-buster: <script>document.location="https://YOUR.LAB.LINK/my-account%23%2f%2e%2e%2fresources?eyes"</script>
+5. In the Body section, create an exploit that redirects the victim user carlos to a malicious URL. Be sure to add an arbitrary parameter as a cache-buster: <script>document.location="https://YOUR.LAB.LINK/my-account%23/%2e%2e%2fresources?eyes"</script>
 6. Click "Deliver Exploit to Victim."
-7. Visit the URL you specified for carlos in your exploit: `https://YOUR.LAB.LINK/my-account%23%2f%2e%2e%2fresources?eyes`.
+7. Visit the URL you specified for carlos in your exploit: `https://YOUR.LAB.LINK/my-account%23/%2e%2e%2fresources?eyes`.
 8. Note that the response includes the API key for the user carlos. Copy this.
    ![API Key for carlos](https://github.com/user-attachments/assets/75ecde4d-d3e8-4dfe-a42d-8083b51c230d).
 
