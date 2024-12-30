@@ -1,0 +1,26 @@
+# Task 1: Deploying a Vulnerable Windows VM 🖥️
+
+## Description
+In this task, you will deploy a vulnerable Windows virtual machine. This room is designed to familiarize you with various privilege escalation techniques in Windows.  
+The VM was created by **Sagi Shahar** for his local privilege escalation workshop, but it was updated by **Tiberius** for his course *"Windows Privilege Escalation for OSCP and Beyond!"* on Udemy.
+
+Full explanations of the techniques used in this room can be found there, along with demonstrations and tips for discovering vulnerabilities in Windows.
+
+> **Important!** ⚠️ Make sure you are connected to the **TryHackMe** VPN or using an embedded **Kali** instance before attempting to access the Windows VM! 🔒
+
+## Steps
+
+1. **Starting the VM** 🚀
+   - Start the vulnerable Windows VM.
+   - Wait for the RDP service to become available on port **3389** (this may take a few minutes).
+
+2. **Connecting to the VM** 💻
+   - Connect from the attacking machine:
+     ```bash
+     xfreerdp /u:user /p:password321 /cert:ignore /v:rhost
+     ```
+   - Log into the **"user"** account using the password **"password321"**. 🔑
+
+---
+
+The following tasks will help you learn various privilege escalation techniques. After each technique, you should obtain a console with administrator or SYSTEM privileges. Don't forget to exit the console and/or restore the session as the **"user"** account before starting the next task! 👨‍💻
