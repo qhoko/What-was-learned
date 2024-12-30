@@ -73,6 +73,20 @@ Let’s explore how delimiters affect the website's behavior.
 
 ---
 
+### 🛡️ 5. Investigating Path Normalization Discrepancies
+
+1. 🔄 **Return to the Repeater**: Remove the arbitrary string and add an arbitrary directory followed by an encoded dot segment at the beginning of the original path. For example, use `/eyes/..%2fmy-account`.
+2. Send the request: ![image](https://github.com/user-attachments/assets/28f7ee83-1d0c-49ba-acb1-adae7ab89da9). Note that it receives a 200 response with your API key. This indicates that the origin server decodes and resolves the dot segment, interpreting the URL path as `/my-account`.
+3. In Proxy > HTTP history, observe that all paths for static resources start with the `/resources` prefix. Note that responses to requests with a `/resources` prefix show signs of caching.
+4. Right-click on the request with the `/resources` prefix and select "Send to Repeater."
+5. In the Repeater, add an encoded dot segment after the `/resources` prefix path, for example: `/eyes/..%2fresources/YOUR-RESOURCE`.
+6. Send the request. Note that the 404 response contains the header `X-Cache: miss`: ![image](https://github.com/user-attachments/assets/9818e19e-a61f-452f-affa-22acafa4fd6c).
+7. Repeat the request. Observe that the value of the `X-Cache` header changes to `hit`. This may indicate that the cache decodes and resolves the dot segment and has a caching rule based on the `/resources` prefix. To confirm this, further testing will be necessary. It's still possible that the response is cached due to another caching rule: ![image](https://github.com/user-attachments/assets/698fac46-f712-4f88-9223-27dacc92b3f5).
+8. Add the encoded dot segment after the `/resources` prefix like this: `/resources/..%2fYOUR-RESOURCE`.
+9. Send the request. Note that the 404 response no longer contains indications of caching. This suggests that the cache decodes and resolves the dot segment and has a caching rule based on the `/resources` prefix.
+
+---
+
 ### 🗝️ 6. Obtaining the API Key
 Determine the API key for the user **carlos**.
 1. Navigate to the Repeater tab that contains the `/eyes/..%2fmy-account` request. Use the `"?"` delimiter to attempt to create an exploit like this: `/my-account?%2f%2e%2e%2fresources`.
