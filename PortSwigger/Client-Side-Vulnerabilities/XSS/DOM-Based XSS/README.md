@@ -1,113 +1,75 @@
-## ❓ What is Stored Cross-Site Scripting (Stored XSS)?
+## ❓ What is DOM-Based Cross-Site Scripting (DOM XSS)?
 
-Stored Cross-Site Scripting (also known as second-order or persistent XSS) occurs when an application receives data from an untrusted source and includes that data in subsequent HTTP responses in an unsafe manner.
+DOM-based XSS vulnerabilities typically occur when JavaScript takes data from an attacker-controlled source, such as a URL, and sends it to a sink that supports dynamic code execution, such as `eval()` or `innerHTML`. This allows attackers to execute malicious JavaScript, which often enables them to hijack other users' accounts.
 
-For example, a website might allow users to leave comments on blog posts, which are then displayed to other users. Comments are submitted via an HTTP request like this:
+To exploit a DOM XSS vulnerability, data must flow from a source to a sink in a way that triggers the execution of arbitrary JavaScript.
 
-```http
-POST /post/comment HTTP/1.1
-Host: vulnerable-website.com
-Content-Length: 100
+The most common source of DOM XSS is the URL, usually accessed via the `window.location` object. An attacker can craft a link to direct a victim to a vulnerable page with a payload in the query string or URL fragments. In some cases, such as on 404 pages or PHP-based websites, the payload can also be placed in the path.
 
-postId=3&comment=This+post+was+extremely+helpful.&name=Carlos+Montoya&email=carlos%40normal-user.net
-```
-
-Once submitted, the comment might be included in the application's response as follows:
-
-```html
-<p>This post was extremely helpful.</p>
-```
-
-If the application does not process the data further, an attacker could submit a malicious comment like this:
-
-```html
-<script>/* Bad stuff here... */</script>
-```
-
-The attacker's request would encode this as follows:
-
-```html
-comment=%3Cscript%3E%2F*%2BBad%2Bstuff%2Bhere...%2B*%2F%3C%2Fscript%3E
-```
-
-Now, any user viewing the blog post would receive the following in the application's response:
-
-```html
-<p><script>/* Bad stuff here... */</script></p>
-```
-
-The attacker's script would then execute in the victim's browser within the context of their session with the application.
+For a detailed description of data flows between sources and sinks, see [DOM-Based Vulnerabilities](#).
 
 ---
 
-## 📉 Impact of Stored XSS Attacks
+## 🔍 Testing HTML Sinks
 
-If an attacker can control the script executed in a victim's browser, they can generally fully compromise that user. This includes the ability to:
+To test for DOM XSS in HTML sinks:
 
-- Perform any actions the user can perform.
-- Steal sensitive data accessible to the user.
-- Impersonate the user or their account.
+1. Insert a random alphanumeric string into the source (e.g., `location.search`).
+2. Use the browser's developer tools to inspect the HTML and find where your string appears.
+   - Important: The browser's "View Source" option is not suitable for DOM XSS testing, as it does not reflect changes made by JavaScript.
+   - In Chrome Developer Tools, use `Ctrl+F` (or `Command+F` on macOS) to search for your string in the DOM.
 
-A critical difference between reflected and stored XSS lies in exploitability:
+3. For each location where your string appears in the DOM:
+   - Identify the context.
+   - Refine the input to understand how it is processed. For example, if the string appears in an attribute enclosed in double quotes, try inserting double quotes to see if you can break out of the attribute.
 
-- **Reflected XSS** requires the attacker to trick users into making specific requests containing the exploit.
-- **Stored XSS** embeds the exploit directly into the application, making it self-sustaining and triggering whenever a user encounters it.
-
-This self-sustaining nature makes stored XSS particularly dangerous in scenarios where the vulnerability affects authenticated users. With reflected XSS, the attack needs to be timed precisely when the user is logged in. With stored XSS, the exploit waits passively, ensuring the user is logged in when encountering it.
-
----
-
-## 📂 Stored XSS in Different Contexts
-
-There are many varieties of stored XSS. The location of stored data in the application's response determines:
-
-1. **The type of payload required to exploit the vulnerability.**
-2. **The potential impact of the vulnerability.**
-
-Additionally, if the application performs validation or other processing on the data before storage or inclusion in responses, it influences the type of XSS payload needed.
-
-For more information, see [XSS Contexts](#).
+4. Note that browsers handle URL encoding differently:
+   - Chrome, Firefox, and Safari encode `location.search` and `location.hash`, whereas IE11 and Microsoft Edge (pre-Chromium) do not.
+   - If data is encoded before processing, an XSS attack is unlikely to succeed.
 
 ---
 
-## 🔍 How to Identify and Test Stored XSS Vulnerabilities
+## 🔬 Testing JavaScript Execution Sinks
 
-Manually testing for XSS vulnerabilities can be complex. You need to examine all relevant "entry points" through which attacker-controlled data can enter the application and all "exit points" where that data might appear in the application's responses.
+Testing JavaScript sinks for DOM XSS is more complex. Input may not appear in the DOM, requiring the use of a JavaScript debugger to trace data processing.
 
-### Entry Points
+1. For each potential source (e.g., `location`):
+   - Search for references to the source in the page's JavaScript code using Chrome Developer Tools (`Ctrl+Shift+F` or `Command+Alt+F` on macOS).
 
-Common entry points include:
+2. When you find where the source is read:
+   - Add a breakpoint in the debugger and trace how the source's value is used.
+   - Monitor variables assigned the source's value and look for their use in sinks.
 
-- Parameters or other data in the URL query string and message body.
-- The file path in the URL.
-- HTTP request headers, which are less commonly exploitable in reflected XSS.
-- Out-of-band routes by which attackers can deliver data to the application, such as:
-  - Emails processed by a webmail application.
-  - Third-party tweets displayed by a social media app.
-  - Aggregated data from other websites included in a news feed.
+3. When you find a sink receiving data from the source:
+   - Check the variable's value in the debugger by hovering over it to see the data passed to the sink.
+   - Refine the input to test if an XSS attack is successful.
 
-### Exit Points
+---
 
-Exit points for stored XSS attacks include all possible HTTP responses returned to any user of the application in any context.
+## ⚙️ Testing DOM XSS Using DOM Invader
 
-### Steps to Test for Stored XSS
+Detecting and exploiting DOM XSS in real-world scenarios can be time-consuming, requiring manual analysis of complex, minified JavaScript. However, if you are using the Burp browser, you can leverage the built-in DOM Invader extension, which automates much of the work.
 
-1. **Identify Links Between Entry and Exit Points**:
-   - Determine how data sent to an entry point might appear at an exit point. This may involve testing different combinations of input and monitoring responses.
+For details, see the [DOM Invader Documentation](#).
 
-2. **Account for Data Overwriting**:
-   - Stored data can often be overwritten by subsequent actions in the application. For example, a search function might display recent searches, which are quickly replaced as new searches are performed.
+---
 
-3. **Focus on Key Application Features**:
-   - Pay attention to functions like blog post comments or user profiles where data is likely to be displayed to other users.
+## 💡 Tips for Preventing DOM XSS
 
-4. **Test Each Entry-Exit Combination**:
-   - Test each identified combination by sending specific input to an entry point and observing the corresponding output at the exit point. Look for cases where the input appears in responses.
+1. **Minimize the use of dangerous sinks**:
+   - Avoid using `eval()`, `innerHTML`, and similar constructs. Use safe alternatives like `textContent` or `setAttribute` instead.
 
-5. **Determine the Context**:
-   - When data appears in a response, identify the context (e.g., within HTML tags, JavaScript, or attributes). This helps tailor your XSS payload.
+2. **Sanitize input data**:
+   - Validate input on both the server and client sides. Use whitelists of allowed values.
 
-6. **Attempt Exploitation**:
-   - Use appropriate payloads to determine if the vulnerability can be exploited successfully.
+3. **Encode output data**:
+   - For HTML contexts, use encoding functions like `encodeURIComponent` or specialized libraries.
 
-By following these steps systematically, you can identify and confirm stored XSS vulnerabilities and assess their potential impact on the application.
+4. **Use Content Security Policy (CSP)**:
+   - Implement a strict CSP to restrict JavaScript execution to trusted sources.
+
+5. **Conduct regular security testing**:
+   - Use automated scanning tools and manual testing to identify XSS vulnerabilities.
+
+6. **Educate developers**:
+   - Raise awareness among your team about XSS risks and prevention techniques.
