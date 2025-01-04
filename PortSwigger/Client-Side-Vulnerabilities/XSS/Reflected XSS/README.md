@@ -1,5 +1,3 @@
-In this section, we explain what reflected cross-site scripting (XSS) is, describe the impact of reflected XSS attacks, and discuss how to identify vulnerabilities associated with reflected XSS.
-
 ## What is Reflected Cross-Site Scripting?
 Reflected cross-site scripting (or XSS) occurs when an application receives data in an HTTP request and includes that data in the immediate response in an unsafe manner.
 
