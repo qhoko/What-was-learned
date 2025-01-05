@@ -38,7 +38,7 @@ Any attribute that makes an external request can be used for hanging markup inje
 
 This next lab is difficult to solve because all external requests are blocked. However, there are certain tags that allow you to store data and retrieve it later from an external server. Solving this lab may require user interaction.
 
-[![Open Lab](https://img.shields.io/badge/Open-Lab-blue)](01.%20%28Expert%29%20Reflected%20XSS%20attack,%20strict%20CSP,%20hanging%20markup.md)
+[![Open Lab](https://img.shields.io/badge/Open-Lab-blue)](./01.%20%28Expert%29%20Reflected%20XSS%20protected%20by%20very%20strict%20CSP%2C%20with%20dangling%20markup%20attack.md)
 
 You can also mitigate some hanging markup injection attacks by using a Content Security Policy (CSP). For example, you can prevent some (but not all) attacks by implementing a policy that disallows tags like `<img>` from loading external resources.
 
