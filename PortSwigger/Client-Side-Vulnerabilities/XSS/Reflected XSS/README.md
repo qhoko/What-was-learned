@@ -30,7 +30,7 @@ This URL produces the following response:
 
 If another user of the application requests the attacker's URL, the attacker-provided script will execute in the victim's browser within the context of their session with the application.
 
-### Lab on this topic: [![Open Lab](https://img.shields.io/badge/Open-Lab-blue)](./01.%20%28%D0%A3%D1%87%D0%B5%D0%BD%D0%B8%D0%BA%29%20%D0%9E%D1%82%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5%20XSS%20%D0%B2%20HTML-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B5%20%D0%B1%D0%B5%D0%B7%20%D0%BA%D0%BE%D0%B4%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F.md)
+### Lab on this topic: [![Open Lab](https://img.shields.io/badge/Open-Lab-blue)](./01.%20%28Apprentice%29%20Reflected%20XSS%20into%20HTML%20context%20with%20nothing%20encoded.md)
 
 ---
 
